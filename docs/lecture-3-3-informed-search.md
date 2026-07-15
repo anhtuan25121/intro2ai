@@ -122,3 +122,8 @@ title: Lecture 3.3 - Informed Search
 ### Learning heuristics from experience
 
 - Học h(n) từ nhiều lời giải tối ưu đã biết (dùng neural net, decision tree,...)
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bảng đối chiếu khái niệm Lecture 3 ↔ Lecture 5
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — Evaluation function EVAL(s) (H-Minimax) là "họ hàng" của heuristic h(n) ở trên: cùng mục đích ước lượng để tránh duyệt hết cây, nhưng EVAL đo "lợi thế" còn h(n) đo "chi phí còn lại" (nội dung thi)

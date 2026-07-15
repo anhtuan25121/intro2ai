@@ -104,3 +104,8 @@ function GENETIC-ALGORITHM(population, FITNESS-FN) returns an individual
 - **Ưu điểm**: crossover giúp "nhảy" đến vùng search space hoàn toàn khác (random exploration mạnh); ít cần domain knowledge; liên hệ hấp dẫn đến tiến hóa sinh học
 - **Nhược điểm**: nhiều tham số cần tinh chỉnh (khó tái lập trên bài toán khác); thiếu bằng chứng thực nghiệm chắc chắn rằng GA tốt hơn hill-climbing + random-restart; cần thiết kế representation cẩn thận
 - Ứng dụng: **Genetic Programming**
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bối cảnh toàn môn học
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — vì sao Adversarial Search **không thể** dùng cách tiếp cận local search (không dự đoán được phản ứng của đối thủ) — xem [Đề thi tham khảo](de-thi-tham-khao.md) Bài 6, câu 5 (nội dung thi)

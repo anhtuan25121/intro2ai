@@ -77,3 +77,9 @@ Ví dụ: Automated taxi driver
 ## Ví dụ PEAS khác
 
 Medical diagnosis · Satellite image analysis · Part-picking robot · Refinery controller · Interactive English tutor (xem bảng SGK)
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bối cảnh toàn môn học
+- [Lecture 3.1 - Problem Solving by Searching](lecture-3-1-problem-solving-by-searching.md) — Goal-based agent (mục 3 ở trên) chính là điểm khởi đầu của toàn bộ chương Search
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — một agent chơi game (MAX) đối đầu 1 agent khác (MIN) là dạng multi-agent, competitive environment đặc biệt (nội dung thi)

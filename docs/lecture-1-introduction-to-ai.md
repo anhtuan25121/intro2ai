@@ -61,3 +61,9 @@ Search (bao gồm Game Playing) · Knowledge representation & reasoning · Plann
 | Giao diện mới, cải tiến | Phát triển phần mềm chậm, tốn kém |
 | Giải quyết vấn đề mới | Thiếu lập trình viên kinh nghiệm |
 | Xử lý thông tin tốt hơn, giảm quá tải | |
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bối cảnh toàn môn học
+- [Lecture 2 - Intelligent Agents](lecture-2-intelligent-agents.md) — bước tiếp theo: agent là "đơn vị" mà AI xây dựng
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — Deep Blue/AlphaGo được phân tích chi tiết ở đây (nội dung thi)

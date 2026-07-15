@@ -5,7 +5,7 @@ title: Cheat Sheet - Adversarial Search
 
 # 🧠 Cheat Sheet — Adversarial Search (ôn nhanh trước giờ thi)
 
-> Chi tiết đầy đủ: [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md)
+> Chi tiết đầy đủ: [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) · Luyện tập: [Đề thi tham khảo](de-thi-tham-khao.md) · Cách trình bày: [Hướng dẫn làm bài](huong-dan-lam-bai.md)
 
 ## 1. Định nghĩa game (5 thành phần)
 `S0, PLAYER(s), ACTIONS(s), RESULT(s,a), TERMINAL-TEST(s), UTILITY(s,p)`

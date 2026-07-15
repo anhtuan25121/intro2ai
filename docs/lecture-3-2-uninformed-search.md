@@ -76,3 +76,8 @@ Không dùng thông tin nào ngoài định nghĩa bài toán — chỉ sinh suc
 
 - **Redundant paths**: nhiều cách để đến cùng 1 state → graph-search dùng explored set để tránh lặp lại
 - Bài toán exponential-complexity thường **không giải được bằng uninformed methods** ngoại trừ instance nhỏ (bảng complexity BFS: depth 16 → 350 năm, 10 exabytes memory!)
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bảng đối chiếu khái niệm Lecture 3 ↔ Lecture 5
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — thuật toán **Alpha-Beta pruning chính là DFS** (mục 3 ở trên) có thêm 2 biến α, β để cắt tỉa (nội dung thi)

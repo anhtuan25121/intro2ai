@@ -6,7 +6,8 @@ title: Lecture 5 - Adversarial Search
 # Lecture 5 — Adversarial Search
 
 > **TRỌNG TÂM THI GIỮA KÌ** — Đây là **nội dung duy nhất** trong đề thi closed-book. Học kỹ toàn bộ trang này.
-> Xem thêm [Cheat Sheet - Adversarial Search](cheat-sheet-adversarial-search.md) để ôn nhanh trước giờ thi.
+> Xem thêm [Cheat Sheet](cheat-sheet-adversarial-search.md) để ôn nhanh, [Đề thi tham khảo](de-thi-tham-khao.md) để luyện tập, và [Hướng dẫn làm bài](huong-dan-lam-bai.md) để biết cách trình bày ăn điểm.
+> Nếu thấy lạ về mặt khái niệm, xem [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — Minimax/Alpha-Beta thực chất là DFS + heuristic đã học ở [Lecture 3.1](lecture-3-1-problem-solving-by-searching.md), [Lecture 3.2](lecture-3-2-uninformed-search.md), [Lecture 3.3](lecture-3-3-informed-search.md).
 
 ## 1. Game theory trong AI — phân loại game
 
@@ -248,3 +249,10 @@ EXPECTIMINIMAX(s) =
 6. Quiescence search giải quyết vấn đề gì?
 7. Expectiminimax khác Minimax ở điểm nào? Viết công thức cho node CHANCE.
 8. Kể tên & năm của 3 cột mốc: Deep Blue, Chinook, AlphaGo — đối thủ là ai, thắng/thua thế nào.
+
+## Xem thêm
+
+- [Cheat Sheet](cheat-sheet-adversarial-search.md) — tóm tắt siêu nhanh + bẫy thường gặp
+- [Đề thi tham khảo](de-thi-tham-khao.md) — 6 bài tập có lời giải chi tiết (minimax, alpha-beta, move ordering, expectiminimax, trắc nghiệm)
+- [Hướng dẫn làm bài & Trình bày](huong-dan-lam-bai.md) — cách trình bày từng dạng câu hỏi để ăn trọn điểm
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — Adversarial Search liên hệ thế nào với các lecture trước

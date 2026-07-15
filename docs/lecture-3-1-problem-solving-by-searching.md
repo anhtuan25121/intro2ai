@@ -86,3 +86,9 @@ function SIMPLE-PROBLEM-SOLVING-AGENT(percept) returns an action
 | **Optimality** | Luôn tìm được solution chi phí thấp nhất? |
 
 Đo bằng: **b** (branching factor), **d** (độ sâu của lời giải rẻ nhất), **m** (độ sâu tối đa của state space, có thể = ∞)
+
+## Xem thêm
+
+- [Lộ trình học & Liên kết kiến thức](lo-trinh-hoc.md) — bảng đối chiếu khái niệm Lecture 3 ↔ Lecture 5
+- [Lecture 2 - Intelligent Agents](lecture-2-intelligent-agents.md) — Goal-based agent, nguồn gốc của Problem formulation
+- [Lecture 5 - Adversarial Search](lecture-5-adversarial-search.md) — Game cũng được định nghĩa bằng 5-6 thành phần tương tự (S0, PLAYER, ACTIONS, RESULT, TERMINAL-TEST, UTILITY), search tree ở đây chính là nền tảng của Game tree (nội dung thi)
