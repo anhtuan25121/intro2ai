@@ -6,3 +6,30 @@ kramdown:
   syntax_highlighter_opts:
     disable : true
 show_downloads: false
+
+# Thu tu doc — dung cho thanh dieu huong truoc/sau o cuoi moi trang
+nav_pages:
+  - url: /lo-trinh-hoc.html
+    title: Lộ trình học
+  - url: /lecture-1-introduction-to-ai.html
+    title: L1 · Introduction to AI
+  - url: /lecture-2-intelligent-agents.html
+    title: L2 · Intelligent Agents
+  - url: /lecture-3-1-problem-solving-by-searching.html
+    title: L3.1 · Problem Solving by Searching
+  - url: /lecture-3-2-uninformed-search.html
+    title: L3.2 · Uninformed Search
+  - url: /lecture-3-3-informed-search.html
+    title: L3.3 · Informed Search
+  - url: /lecture-4-local-search-algorithms.html
+    title: L4 · Local Search
+  - url: /lecture-5-adversarial-search.html
+    title: L5 · Adversarial Search ⭐
+  - url: /cheat-sheet-adversarial-search.html
+    title: Cheat Sheet
+  - url: /de-thi-tham-khao.html
+    title: Đề thi tham khảo
+  - url: /huong-dan-lam-bai.html
+    title: Hướng dẫn làm bài
+  - url: /lab-1-hide-and-seek.html
+    title: Lab 1 · Hide & Seek

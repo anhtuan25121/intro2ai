@@ -15,20 +15,22 @@
       <button class="nav-toggle" aria-label="Mở menu" onclick="document.querySelector('.site-nav').classList.toggle('open')">☰</button>
     </div>
     <nav class="site-nav">
-      <a href="{{ '/' | relative_url }}">Trang chủ</a>
-      <a href="{{ '/lo-trinh-hoc.html' | relative_url }}">Lộ trình học</a>
+      <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Trang chủ</a>
+      <a href="{{ '/lo-trinh-hoc.html' | relative_url }}" {% if page.url == '/lo-trinh-hoc.html' %}class="active"{% endif %}>Lộ trình</a>
       <span class="nav-sep">|</span>
-      <a href="{{ '/lecture-1-introduction-to-ai.html' | relative_url }}">L1</a>
-      <a href="{{ '/lecture-2-intelligent-agents.html' | relative_url }}">L2</a>
-      <a href="{{ '/lecture-3-1-problem-solving-by-searching.html' | relative_url }}">L3.1</a>
-      <a href="{{ '/lecture-3-2-uninformed-search.html' | relative_url }}">L3.2</a>
-      <a href="{{ '/lecture-3-3-informed-search.html' | relative_url }}">L3.3</a>
-      <a href="{{ '/lecture-4-local-search-algorithms.html' | relative_url }}">L4</a>
+      <a href="{{ '/lecture-1-introduction-to-ai.html' | relative_url }}" {% if page.url == '/lecture-1-introduction-to-ai.html' %}class="active"{% endif %}>L1</a>
+      <a href="{{ '/lecture-2-intelligent-agents.html' | relative_url }}" {% if page.url == '/lecture-2-intelligent-agents.html' %}class="active"{% endif %}>L2</a>
+      <a href="{{ '/lecture-3-1-problem-solving-by-searching.html' | relative_url }}" {% if page.url == '/lecture-3-1-problem-solving-by-searching.html' %}class="active"{% endif %}>L3.1</a>
+      <a href="{{ '/lecture-3-2-uninformed-search.html' | relative_url }}" {% if page.url == '/lecture-3-2-uninformed-search.html' %}class="active"{% endif %}>L3.2</a>
+      <a href="{{ '/lecture-3-3-informed-search.html' | relative_url }}" {% if page.url == '/lecture-3-3-informed-search.html' %}class="active"{% endif %}>L3.3</a>
+      <a href="{{ '/lecture-4-local-search-algorithms.html' | relative_url }}" {% if page.url == '/lecture-4-local-search-algorithms.html' %}class="active"{% endif %}>L4</a>
       <span class="nav-sep">|</span>
-      <a href="{{ '/lecture-5-adversarial-search.html' | relative_url }}" class="nav-highlight">L5 ⭐</a>
-      <a href="{{ '/cheat-sheet-adversarial-search.html' | relative_url }}" class="nav-highlight">Cheat Sheet</a>
-      <a href="{{ '/de-thi-tham-khao.html' | relative_url }}" class="nav-highlight">Đề thi</a>
-      <a href="{{ '/huong-dan-lam-bai.html' | relative_url }}" class="nav-highlight">Hướng dẫn</a>
+      <a href="{{ '/lecture-5-adversarial-search.html' | relative_url }}" class="nav-highlight {% if page.url == '/lecture-5-adversarial-search.html' %}active{% endif %}">L5 ⭐</a>
+      <a href="{{ '/cheat-sheet-adversarial-search.html' | relative_url }}" class="nav-highlight {% if page.url == '/cheat-sheet-adversarial-search.html' %}active{% endif %}">Cheat Sheet</a>
+      <a href="{{ '/de-thi-tham-khao.html' | relative_url }}" class="nav-highlight {% if page.url == '/de-thi-tham-khao.html' %}active{% endif %}">Đề thi</a>
+      <a href="{{ '/huong-dan-lam-bai.html' | relative_url }}" class="nav-highlight {% if page.url == '/huong-dan-lam-bai.html' %}active{% endif %}">Hướng dẫn</a>
+      <span class="nav-sep">|</span>
+      <a href="{{ '/lab-1-hide-and-seek.html' | relative_url }}" {% if page.url == '/lab-1-hide-and-seek.html' %}class="active"{% endif %}>Lab 1</a>
     </nav>
   </header>
 
@@ -36,10 +38,66 @@
     <article class="content-card">
       {{ content }}
     </article>
+
+    {% if page.url != '/' %}
+    {% assign pages = site.nav_pages %}
+    {% for p in pages %}
+      {% if p.url == page.url %}
+        {% assign idx = forloop.index0 %}
+      {% endif %}
+    {% endfor %}
+    {% if idx %}
+    <nav class="page-nav">
+      {% assign prev_idx = idx | minus: 1 %}
+      {% assign next_idx = idx | plus: 1 %}
+      {% if idx > 0 %}
+        {% assign prev = pages[prev_idx] %}
+        <a class="page-nav-link prev" href="{{ prev.url | relative_url }}"><span class="page-nav-label">← Bài trước</span><span class="page-nav-title">{{ prev.title }}</span></a>
+      {% else %}
+        <span></span>
+      {% endif %}
+      {% assign total = pages | size %}
+      {% if next_idx < total %}
+        {% assign next = pages[next_idx] %}
+        <a class="page-nav-link next" href="{{ next.url | relative_url }}"><span class="page-nav-label">Bài tiếp →</span><span class="page-nav-title">{{ next.title }}</span></a>
+      {% endif %}
+    </nav>
+    {% endif %}
+    {% endif %}
   </main>
 
   <footer class="site-footer">
-    <p>INTRO2AI — hệ thống hóa kiến thức &amp; ôn thi giữa kì · Adversarial Search 🧠</p>
+    <p>INTRO2AI — hệ thống hóa kiến thức &amp; ôn thi giữa kì · <a href="https://github.com/liltommy142/intro2ai">GitHub</a> 🧠</p>
   </footer>
+
+  <script>
+    // Tu dong sinh muc luc cho trang dai (>= 3 muc h2), gan sau h1
+    (function () {
+      var article = document.querySelector('.content-card');
+      if (!article) return;
+      var heads = article.querySelectorAll('h2');
+      if (heads.length < 3) return;
+      var toc = document.createElement('details');
+      toc.className = 'toc';
+      toc.open = window.innerWidth > 700;
+      var summary = document.createElement('summary');
+      summary.textContent = '📑 Mục lục';
+      toc.appendChild(summary);
+      var ul = document.createElement('ul');
+      heads.forEach(function (h, i) {
+        if (!h.id) h.id = 'sec-' + i;
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent;
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      toc.appendChild(ul);
+      var h1 = article.querySelector('h1');
+      if (h1) h1.insertAdjacentElement('afterend', toc);
+      else article.insertAdjacentElement('afterbegin', toc);
+    })();
+  </script>
 </body>
 </html>

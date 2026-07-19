@@ -36,3 +36,6 @@ ENV/
 _site/
 .jekyll-cache/
 .sass-cache/
+
+# Obsidian workspace (thay doi lien tuc theo phien lam viec)
+Obsidian Vault/.obsidian/workspace.json
