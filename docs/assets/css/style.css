@@ -244,6 +244,8 @@ table tbody tr:nth-child(even) { background: var(--table-stripe); }
   margin: 0 0 0.5rem;
   border-bottom: none;
   padding-bottom: 0;
+}
+.hero-grad {
   background: linear-gradient(120deg, var(--accent), #9b6ef3);
   -webkit-background-clip: text;
   background-clip: text;

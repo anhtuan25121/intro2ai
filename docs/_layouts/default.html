@@ -75,6 +75,7 @@
     (function () {
       var article = document.querySelector('.content-card');
       if (!article) return;
+      if (article.querySelector('.hero')) return; // trang chu da co card grid, khong can muc luc
       var heads = article.querySelectorAll('h2');
       if (heads.length < 3) return;
       var toc = document.createElement('details');

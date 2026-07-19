@@ -4,7 +4,7 @@ title: INTRO2AI — Ghi chú ôn tập
 ---
 
 <div class="hero">
-  <h1 class="hero-title">🧠 INTRO2AI</h1>
+  <h1 class="hero-title"><span class="hero-emoji">🧠</span> <span class="hero-grad">INTRO2AI</span></h1>
   <p class="hero-sub">Hệ thống hoá kiến thức môn <strong>Nhập môn Trí tuệ Nhân tạo</strong> — từ agent, search đến adversarial search, kèm bài lab thực chiến.</p>
   <div class="hero-actions">
     <a class="btn btn-primary" href="{{ '/lecture-5-adversarial-search.html' | relative_url }}">⭐ Ôn thi giữa kì</a>
