@@ -1,9 +1,10 @@
 # - GROUP INFORMATION
 #   + NO.: 0
 #   + NAME: A-Star
-#   + MEMBER: 1
-#       - STUDENT ID: 19127616
-# Optimized submission - ban final
+#   + MEMBER: 2
+#       - STUDENT ID #1: 19127616
+#       - STUDENT ID #2: 19127615
+# Optimized submission - bản final
 
 import sys
 import time
@@ -20,18 +21,20 @@ from environment import Move
 
 
 MOVES = [Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT]
-CAPTURE_DIST = 2  # de bai: bat duoc khi Manhattan distance < 2
-ASSUMED_PACMAN_SPEED = 2  # ban final Pacman duoc di toi da 2 o thang hang moi luot
-TIME_BUDGET = 0.65  # giay - chua bien an toan duoi muc gioi han 1s cua de bai
-MAX_DEPTH = 10  # tran tren, thuc te thuong khong toi vi het TIME_BUDGET truoc
+CAPTURE_DIST = 2  # đề bài: bắt được khi Manhattan distance < 2
+ASSUMED_PACMAN_SPEED = 2  # đề bài: Pacman luôn được đi tối đa 2 ô thẳng hàng mỗi lượt
+TIME_BUDGET = 0.65  # giây - chừa biên an toàn dưới mốc 1s của đề bài (phòng máy chấm chậm hơn máy mình)
+MAX_DEPTH = 10  # trần trên cho chắc, thực tế gần như không tới vì hết TIME_BUDGET trước
 
 
 class _SearchTimeout(Exception):
+    # dùng để "ngắt ngang" minimax khi hết giờ, xem _search_best_move
     pass
 
 
-# ---------------- Helper dung chung cho ca 2 agent ----------------
+# ---------------- Helper dùng chung cho cả 2 agent ----------------
 
+# ô có đi được không (không phải tường, không ra ngoài bản đồ)
 def is_valid(pos, map_state):
     r, c = pos
     h, w = map_state.shape
@@ -40,6 +43,7 @@ def is_valid(pos, map_state):
     return map_state[r, c] == 0
 
 
+# các ô kề đi được từ 1 vị trí, kèm nước đi tương ứng
 def get_neighbors(pos, map_state):
     neighbors = []
     for move in MOVES:
@@ -50,15 +54,17 @@ def get_neighbors(pos, map_state):
     return neighbors
 
 
+# khoảng cách Manhattan giữa 2 ô
 def manhattan(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
+# A* tìm đường ngắn nhất, trả về danh sách nước đi (rỗng nếu đã ở goal hoặc không tới được)
 def astar(map_state, start, goal):
     if start == goal:
         return []
 
-    counter = 0
+    counter = 0  # tie-break cho heapq khi 2 node có cùng f-score, tránh so sánh tuple lỗi
     heap = [(manhattan(start, goal), 0, counter, start, [])]
     visited = set()
 
@@ -73,11 +79,13 @@ def astar(map_state, start, goal):
             if npos not in visited:
                 ng = g + 1
                 counter += 1
-                heapq.heappush(heap, (ng + manhattan(npos, goal), ng, counter, npos, path + [move]))
+                f_score = ng + manhattan(npos, goal)
+                heapq.heappush(heap, (f_score, ng, counter, npos, path + [move]))
 
-    return []
+    return []  # không có đường tới goal
 
 
+# BFS từ 1 điểm, trả về khoảng cách THẬT (có tính tường) tới mọi ô đi được
 def bfs_distances(map_state, start):
     dist = {start: 0}
     queue = deque([start])
@@ -90,9 +98,8 @@ def bfs_distances(map_state, start):
     return dist
 
 
+# nếu Pacman đi thẳng theo move, nó có thể dừng ở những ô nào
 def pacman_step_positions(pos, move, map_state, speed=ASSUMED_PACMAN_SPEED):
-    """Cac vi tri Pacman co the dung lai neu di thang theo `move` toi da `speed` o (dung stop som khi dung tuong,
-    giong cach environment.py thuc su di chuyen)."""
     dr, dc = move.value
     positions = []
     cur = pos
@@ -105,8 +112,8 @@ def pacman_step_positions(pos, move, map_state, speed=ASSUMED_PACMAN_SPEED):
     return positions
 
 
+# toàn bộ vị trí Pacman có thể tới trong 1 lượt: đứng yên, hoặc đi 1-2 ô theo 1 trong 4 hướng
 def pacman_actions(pos, map_state):
-    """Toan bo vi tri Pacman co the den duoc trong 1 luot: dung yen, hoac di 1/2 o theo 1 trong 4 huong."""
     actions = [pos]
     for move in MOVES:
         actions.extend(pacman_step_positions(pos, move, map_state))
@@ -119,23 +126,13 @@ def pacman_actions(pos, map_state):
     return unique
 
 
-# ---------------- Pacman: A* duoi thang, giu nguyen logic ban initial ----------------
-#
-# Da thu them 1 lop du doan huong di cua Ghost (noi suy tuyen tinh tu 2 vi tri gan nhat)
-# nhung test thuc te qua 15 doi thu (script run_tournament.py) cho thay: 14/15 tran
-# ket qua y het ban khong du doan, 1/15 tran (truoc Ghost nhom 8) lai CHAM HON 1 buoc -
-# du doan tuyen tinh don gian bi lech khi doi thu di khong theo duong thang (vi du doi
-# thu dung minimax). Loi ich = 0, rui ro > 0 nen bo tinh nang nay, chi giu lai A* truc
-# tiep (da toi uu san, 15/15 tran o ban initial) cong them try/except cho an toan.
-
+# Pacman Agent: A* đuổi thẳng, thêm try/except cho an toàn
 class PacmanAgent(BasePacmanAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.pacman_speed = max(1, int(kwargs.get("pacman_speed", 1)))
 
     def step(self, map_state, my_position, enemy_position, step_number):
-        # Boc CA HAM trong try/except (khong chi doan astar) - neu tuple(...) hay bat ky
-        # buoc nao khac loi thi van co 1 nuoc an toan de tra ve thay vi crash ca tran.
         try:
             if enemy_position is None:
                 return (Move.STAY, 1)
@@ -147,6 +144,7 @@ class PacmanAgent(BasePacmanAgent):
             if not path:
                 return (Move.STAY, 1)
 
+            # đi thẳng luôn nếu vài bước kế tiếp trong path cùng hướng với bước đầu
             first_move = path[0]
             steps = 1
             for i in range(1, min(self.pacman_speed, len(path))):
@@ -160,20 +158,16 @@ class PacmanAgent(BasePacmanAgent):
             return (Move.STAY, 1)
 
 
-# ---------------- Ghost: minimax + alpha-beta + iterative deepening ----------------
-#
-# Y tuong: thay vi chi chon nuoc di xa Pacman nhat o buoc hien tai (greedy 1 buoc),
-# mo phong truoc vai luot doi dap qua lai giua 2 ben (Ghost toi da hoa khoang cach,
-# gia dinh Pacman toi thieu hoa no va co the di toi 2 o/luot). Neu minimax loi hoac
-# khong kip chay het 1 vong nao, rot ve lai logic greedy ban dau cho an toan.
-
+# Ghost Agent: minimax + alpha-beta + iterative deepening
 class GhostAgent(BaseGhostAgent):
+    # chỉ khởi tạo state rỗng ở đây - _degree được đổ dữ liệu thật ở _prepare_map bên dưới
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._map_ready = False
         self._degree = {}
         self._prev_pos = None
 
+    # tính trước số ô kề đi được của mọi ô trên bản đồ, chỉ chạy 1 lần cho cả trận
     def _prepare_map(self, map_state):
         if self._map_ready:
             return
@@ -186,31 +180,37 @@ class GhostAgent(BaseGhostAgent):
         self._map_ready = True
 
     def _evaluate(self, ghost_pos, pac_pos):
-        # Dung khoang cach Manhattan THAT SU voi vi tri Pacman mo phong tai chinh node nay
-        # (khong dung lai ban do khoang cach tinh san tu dau luot, vi Pacman mo phong co the
-        # da di rat xa vi tri that sau vai nuoc trong cay - dung ban do cu se danh gia sai).
+        # dùng Manhattan sống tại node này, không dùng lại bản đồ BFS tính sẵn từ đầu
+        # lượt - đã dính bug thật vụ đó: Pacman mô phỏng đi xa dần trong cây, bản đồ cũ
+        # đánh giá sai, Ghost bị bắt trong 9 bước thay vì 200
         dist = manhattan(ghost_pos, pac_pos)
         degree = self._degree.get(ghost_pos, 0)
 
         score = dist * 10 + degree * 3
         if degree <= 1:
-            score -= 20  # dung o ngo cut / hanh lang cut la rui ro cao
+            score -= 20  # ngõ cụt / hành lang cụt, rủi ro cao
         if ghost_pos == self._prev_pos:
-            score -= 2  # phat nhe viec dung yen/quay lai cho cu de tranh bi doan bai
+            score -= 2  # đứng yên/quay lại chỗ cũ hơi dễ đoán bài, phạt nhẹ thôi
 
         return score
 
+    # minimax với alpha-beta pruning, trả về score của node (không trả move)
     def _minimax(self, ghost_pos, pac_pos, depth, alpha, beta, maximizing, map_state, pac_dist_map, deadline):
+        # hết giờ giữa chừng thì raise để _search_best_move bắt, dừng vòng iterative deepening
+        # ở đây và giữ lại kết quả của độ sâu trước đó, không dùng kết quả tính dở
         if time.perf_counter() > deadline:
             raise _SearchTimeout
 
         if manhattan(ghost_pos, pac_pos) < CAPTURE_DIST:
-            return -100000 - depth  # bi bat cang som (con nhieu depth con lai) cang te
+            return -100000 - depth  # bị bắt càng sớm (depth còn lại càng nhiều) càng tệ
 
         if depth == 0:
             return self._evaluate(ghost_pos, pac_pos)
 
         if maximizing:
+            # lượt Ghost: chọn nước max hoá điểm. Sắp theo pac_dist_map trước (xa
+            # Pacman lúc đầu lượt nhất) chỉ để alpha-beta cắt sớm hơn, không ảnh
+            # hưởng kết quả cuối cùng.
             best = float("-inf")
             candidates = get_neighbors(ghost_pos, map_state) + [(ghost_pos, Move.STAY)]
             candidates.sort(key=lambda x: pac_dist_map.get(x[0], 0), reverse=True)
@@ -223,6 +223,7 @@ class GhostAgent(BaseGhostAgent):
                     break
             return best
         else:
+            # lượt Pacman: giả định nó chơi tối ưu, chọn nước làm Ghost tệ nhất
             best = float("inf")
             candidates = pacman_actions(pac_pos, map_state)
             candidates.sort(key=lambda p: manhattan(p, ghost_pos))
@@ -236,8 +237,8 @@ class GhostAgent(BaseGhostAgent):
             return best
 
     def _greedy_fallback(self, my_pos, pac_pos, map_state, dist_map=None):
-        # logic cua ban initial submission - dung khi minimax loi hoac het gio ngay vong dau.
-        # dist_map co the duoc truyen san (tu _search_best_move, da tinh roi) de khoi tinh lai BFS 2 lan/buoc.
+        # logic của bản initial, dùng khi minimax lỗi hoặc chưa kịp xong vòng đầu.
+        # dist_map cho phép truyền sẵn (từ _search_best_move) để đỡ tính BFS 2 lần/bước
         if dist_map is None:
             dist_map = bfs_distances(map_state, pac_pos)
         best_move = Move.STAY
@@ -260,6 +261,9 @@ class GhostAgent(BaseGhostAgent):
         candidates_root = get_neighbors(my_pos, map_state) + [(my_pos, Move.STAY)]
         candidates_root.sort(key=lambda x: pac_dist_map.get(x[0], 0), reverse=True)
 
+        # iterative deepening: tăng dần độ sâu, mỗi độ sâu chạy XONG HẲN mới cập nhật
+        # best_move - nếu hết giờ giữa chừng thì giữ kết quả của độ sâu trước đó, không
+        # bao giờ dùng kết quả nửa vời
         depth = 1
         while depth <= MAX_DEPTH and time.perf_counter() < deadline:
             try:
@@ -280,9 +284,9 @@ class GhostAgent(BaseGhostAgent):
         return best_move
 
     def step(self, map_state, my_position, enemy_position, step_number):
-        # 2 lop an toan: (1) thu minimax day du; (2) neu loi (ke ca loi ngay o tuple(...))
-        # thi rot ve greedy don gian; (3) neu ca greedy cung loi (vd map_state la rac) thi
-        # tra ve STAY - khong bao gio de step() nem exception ra ngoai.
+        # 2 lớp an toàn: minimax lỗi -> rớt về greedy; greedy cũng lỗi (map_state
+        # rác chẳng hạn) -> đứng yên. Không bao giờ để step() văng exception ra ngoài,
+        # vì mỗi trận chỉ chạy đúng 1 lần, lỗi 1 cái là mất trắng.
         try:
             if enemy_position is None:
                 return Move.STAY

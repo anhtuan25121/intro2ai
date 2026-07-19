@@ -98,8 +98,7 @@ def bfs_distances(map_state, start):
     return dist
 
 
-# nếu Pacman đi thẳng theo `move`, nó có thể dừng ở những ô nào (tối đa `speed` ô,
-# dừng sớm nếu đụng tường - giống hệt cách environment.py di chuyển thật)
+# nếu Pacman đi thẳng theo move, nó có thể dừng ở những ô nào
 def pacman_step_positions(pos, move, map_state, speed=ASSUMED_PACMAN_SPEED):
     dr, dc = move.value
     positions = []
@@ -127,20 +126,13 @@ def pacman_actions(pos, map_state):
     return unique
 
 
-# ---------------- Pacman: A* đuổi thẳng, giữ nguyên logic bản initial ----------------
-# Từng thử thêm dự đoán hướng đi của Ghost (nội suy từ 2-3 vị trí quan sát gần nhất) để
-# chặn đầu thay vì đuổi thẳng vị trí hiện tại. Test lại có seed random đàng hoàng (đối
-# thủ nào cũng cùng 1 nước đi giữa các lần chạy) thì kết quả y hệt nhau tuyệt đối - nên
-# bỏ, giữ A* trực tiếp cho gọn (chi tiết ở plan.md mục 10). Chỉ thêm try/except cho an toàn.
-
+# Pacman Agent: A* đuổi thẳng, thêm try/except cho an toàn
 class PacmanAgent(BasePacmanAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.pacman_speed = max(1, int(kwargs.get("pacman_speed", 1)))
 
     def step(self, map_state, my_position, enemy_position, step_number):
-        # bọc cả hàm, không chỉ đoạn astar - lỡ tuple(...) hay bước nào đó lỗi thì
-        # vẫn có nước an toàn để trả, thay vì crash mất trắng cả trận
         try:
             if enemy_position is None:
                 return (Move.STAY, 1)
@@ -166,19 +158,9 @@ class PacmanAgent(BasePacmanAgent):
             return (Move.STAY, 1)
 
 
-# ---------------- Ghost: minimax + alpha-beta + iterative deepening ----------------
-# Ý tưởng: thay vì chỉ chọn nước xa Pacman nhất ở bước hiện tại (greedy 1 bước), mô
-# phỏng trước vài lượt đối đáp qua lại (Ghost tối đa hoá khoảng cách, giả định Pacman
-# tối thiểu hoá nó và có thể đi 2 ô/lượt). Lỗi hoặc không kịp chạy hết 1 vòng nào thì
-# rớt về logic greedy ban đầu.
-#
-# Từng thử bỏ hẳn alpha-beta/iterative-deepening cho gọn, chỉ để minimax depth cố
-# định - tưởng không mất gì mấy, nhưng test lại thì mất đúng 1 trận từng thắng (Ghost
-# sống 200 bước trước 1 Pacman yếu, còn depth cố định thì chỉ sống 11 bước như bình
-# thường). Tăng depth cố định lên cũng không cứu được, mà còn suýt vượt quá 1s. Nên
-# quay lại giữ nguyên bản này (số liệu cụ thể ở plan.md mục 13).
-
+# Ghost Agent: minimax + alpha-beta + iterative deepening
 class GhostAgent(BaseGhostAgent):
+    # chỉ khởi tạo state rỗng ở đây - _degree được đổ dữ liệu thật ở _prepare_map bên dưới
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._map_ready = False
@@ -198,10 +180,9 @@ class GhostAgent(BaseGhostAgent):
         self._map_ready = True
 
     def _evaluate(self, ghost_pos, pac_pos):
-        # dùng Manhattan SỐNG giữa 2 vị trí mô phỏng ngay tại node này, không dùng
-        # lại bản đồ khoảng cách tính sẵn từ đầu lượt - đã đứt tay vụ này 1 lần rồi:
-        # Pacman mô phỏng trong cây đi xa dần, bản đồ cũ không theo kịp nên đánh giá
-        # sai, Ghost bị bắt trong 9 bước thay vì 200 (xem plan.md mục 9)
+        # dùng Manhattan sống tại node này, không dùng lại bản đồ BFS tính sẵn từ đầu
+        # lượt - đã dính bug thật vụ đó: Pacman mô phỏng đi xa dần trong cây, bản đồ cũ
+        # đánh giá sai, Ghost bị bắt trong 9 bước thay vì 200
         dist = manhattan(ghost_pos, pac_pos)
         degree = self._degree.get(ghost_pos, 0)
 
@@ -213,12 +194,15 @@ class GhostAgent(BaseGhostAgent):
 
         return score
 
+    # minimax với alpha-beta pruning, trả về score của node (không trả move)
     def _minimax(self, ghost_pos, pac_pos, depth, alpha, beta, maximizing, map_state, pac_dist_map, deadline):
+        # hết giờ giữa chừng thì raise để _search_best_move bắt, dừng vòng iterative deepening
+        # ở đây và giữ lại kết quả của độ sâu trước đó, không dùng kết quả tính dở
         if time.perf_counter() > deadline:
             raise _SearchTimeout
 
         if manhattan(ghost_pos, pac_pos) < CAPTURE_DIST:
-            return -100000 - depth  # bị bắt càng sớm càng tệ (depth còn lại càng nhiều)
+            return -100000 - depth  # bị bắt càng sớm (depth còn lại càng nhiều) càng tệ
 
         if depth == 0:
             return self._evaluate(ghost_pos, pac_pos)

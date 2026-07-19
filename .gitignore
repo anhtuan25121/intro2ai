@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Editors / IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Submission packaging artifacts (Hide and Seek Arena lab - vd 0.zip)
+*.zip
+
+# File tam/lock cua Excel khi dang mo
+~$*.xlsx
+~$*.xls
+~$*.xlsm
+
+# Jekyll (docs/ neu build local)
+_site/
+.jekyll-cache/
+.sass-cache/

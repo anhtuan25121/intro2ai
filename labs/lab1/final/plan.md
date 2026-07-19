@@ -203,3 +203,61 @@ Một agent riêng, đọc lại `agent.py` từ đầu đối chiếu với `ag
 3. **(Low, đã sửa)** `_search_best_move` tính `pac_dist_map` rồi gọi `_greedy_fallback` — bên trong `_greedy_fallback` lại tính đúng BFS đó lần nữa (dư thừa, tuy không sai). Đã sửa: thêm tham số `dist_map=None` cho `_greedy_fallback`, `_search_best_move` truyền thẳng `pac_dist_map` đã có sẵn, khỏi tính lại. Re-test 30 trận sau khi sửa: **kết quả giống hệt** (đúng như kỳ vọng — chỉ là tối ưu, không đổi logic).
 
 Không phát hiện thêm bug crash, vòng lặp vô hạn, lỗi minimax (sai player tối đa/tối thiểu, sai điều kiện dừng, sai dấu điểm), hay rò rỉ state giữa các trận nào khác.
+
+## 12. Unit test tự động (`final/tests/test_agent.py`)
+
+Đã bù lại lỗ hổng tự nhận ở mục 11 phần "% AI"/checklist: chưa có test case tự động cho từng hàm riêng lẻ, toàn bộ kiểm chứng trước đó chỉ dựa vào chạy tournament tổng thể. Viết `unittest` thuần (không phụ thuộc pytest, khớp giới hạn thư viện của đề bài), import trực tiếp `final/agent.py` qua `importlib` (tự chèn `sys.path` đúng, không cần đồng bộ sang `submissions/0` trước). 42 test bao phủ 3 tầng: helper thuần (`is_valid`, `astar`, `bfs_distances`, `pacman_step_positions`...), logic nội bộ Ghost (`_evaluate`, `_minimax`, `_greedy_fallback`), và hành vi tổng thể (`step()` của cả 2 agent, kể cả an toàn khi input dị dạng và khi giả lập hết `TIME_BUDGET`). Có 1 test hồi quy có chủ đích: so `_greedy_fallback` với đúng công thức gốc của bản `init` để phát hiện sớm nếu sau này refactor vô tình đổi logic fallback.
+
+## 13. Vòng test/sửa #3 — thử đơn giản hoá Ghost để dễ giải thích hơn, đo được cái giá thật, khôi phục lại
+
+**Bối cảnh:** lo ngại `final/agent.py` "quá pro" so với trình độ sinh viên mới học AI (minimax + alpha-beta + iterative deepening + time budget + 2 lớp safety net + phương pháp test có kiểm soát seed — xem thảo luận "liệu có quá pro"). Đề xuất: bỏ alpha-beta + iterative deepening + time budget, thay bằng minimax thuần với `GHOST_SEARCH_DEPTH` cố định nhỏ (3), với giả thuyết ban đầu là lợi ích của bộ máy phức tạp này không đáng kể (dựa trên số liệu cũ: chỉ +2 bước ở 1/10 đối thủ mạnh so với greedy).
+
+**Đã cài đặt và benchmark thật (30 trận, `run_tournament.py`)** — giả thuyết SAI, cái giá là có thật:
+
+| Chỉ số | Trước (alpha-beta + iterative deepening) | Sau (depth=3 cố định) |
+|---|---|---|
+| Win as Ghost | 1 | 0 |
+| Avg Ghost Steps | 24.067 | 10.267 |
+| Total Win | 17 | 15 |
+
+Đào sâu: 9/10 đối thủ mạnh không đổi (vẫn ~10-11 bước — đúng "định mệnh toán học" đã biết ở mục 9). Toàn bộ khoản lỗ nằm ở đúng 1 trận: Pacman #11 (yếu/chậm) — bản cũ sống 200 bước, bản depth=3 chỉ sống 11 bước.
+
+**Thử tăng depth cố định để cứu lại — không cứu được, và phát hiện rủi ro nghiêm trọng hơn:**
+
+| Depth (không alpha-beta) | Kết quả trước Pacman #11 | Thời gian/bước tệ nhất |
+|---|---|---|
+| 3-7 | Vẫn bị bắt trong 11-14 bước | ≤0.115s |
+| 8 | Vẫn bị bắt (12 bước) | 0.768s — sát ngưỡng 1s |
+| 15 (thêm alpha-beta) | — | **Treo hơn 2 phút, phải kill process** |
+
+**Kết luận kỹ thuật:** không tồn tại 1 depth cố định nào vừa đủ sâu để hữu ích (khai thác được Pacman #11) vừa đủ nông để an toàn (không vượt 1s) cho mọi tình huống. Iterative deepening + time budget không phải trang trí kỹ thuật thừa — đó là cách DUY NHẤT tự động tìm đúng độ sâu tối đa an toàn theo từng tình huống thực tế, một lý do chính đáng và dễ giải thích khi phỏng vấn ("không biết trước depth an toàn nên phải tăng dần + có đồng hồ chặn"), không phải chỉ để "cho có vẻ pro".
+
+**Quyết định cuối cùng:** khôi phục lại nguyên bộ máy alpha-beta + iterative deepening + time budget trong `final/agent.py`. Đã re-test 30 trận sau khi khôi phục: **số liệu giống hệt bản gốc trước khi thử đơn giản hoá** (Win Ghost 1/15, avg 24.067, Total Win 16 trên bộ 15 đối thủ initial). Rationale đầy đủ của thí nghiệm này (bao gồm số liệu cụ thể) đã được chép thẳng vào comment trong `agent.py` (phần Ghost) để có thể tự giải thích lại đúng quá trình cân nhắc khi bị hỏi, thay vì chỉ nói suông "vì em thấy cần".
+
+## 14. Kiểm chứng nghiêm ngặt nhất — cho `init` và `final` chạy qua ĐÚNG cùng 1 harness, đủ cả 15 đối thủ
+
+Mọi so sánh trước đó (mục 9, 13) đều có kẽ hở: hoặc so `final` với số liệu "chính thức" của `init` (2 nguồn dữ liệu khác nhau, không hoàn toàn công bằng), hoặc chỉ test trên tập con 10/15 đối thủ (mục 8 cũ). Để trả lời dứt điểm câu hỏi "nếu giữ nguyên cách chấm cũ thì final có hơn init không", đã viết script cho **cả 2 file `init/agent.py` và `final/agent.py` cùng chạy qua đúng 1 harness, cùng seed=42, cùng đủ 15 đối thủ** (không loại đối thủ nào).
+
+**Kết quả:**
+
+| | INIT | FINAL |
+|---|---|---|
+| Win Pacman | 15/15 | 15/15 |
+| Avg Pacman steps | 9.733 | 9.733 |
+| Win Ghost | 1/15 | 1/15 |
+| Avg Ghost steps | 24.600 | 24.067 |
+| **Total Win** | **16** | **16** |
+| **Tie-break** (`avg_pacman − avg_ghost`) | **−14.867** | **−14.333** |
+
+**Total Win hoà tuyệt đối. Tie-break nhỉnh về phía INIT** (thấp/âm hơn = tốt hơn theo đúng công thức PDF+QA) — nghĩa là nếu áp đúng công thức xếp hạng thật vào đúng bộ đối thủ này, **INIT xếp hạng cao hơn FINAL một chút**, không phải ngược lại.
+
+**Soi từng trận để tìm nguyên nhân:** phía Pacman giống hệt 100% trên cả 15 đối thủ (đúng kỳ vọng vì logic Pacman không đổi). Phía Ghost, 13/15 trận giống hệt, lệch đúng 2 trận:
+
+| Đối thủ | Ghost=INIT (bước) | Ghost=FINAL (bước) | Chênh lệch |
+|---|---|---|---|
+| nhóm 2 | 22 | **12** | **−10 (final tệ hơn hẳn)** |
+| nhóm 5 | 11 | 13 | +2 (final tốt hơn) |
+
+**Phát hiện quan trọng:** trận thua trước nhóm 2 (Pacman dùng BFS + cache đường đi, chỉ replan khi Ghost dịch ≥2 ô) **chưa từng xuất hiện trong benchmark trước đây**, vì bộ 10 đối thủ test ở mục 8 chỉ chọn nhóm 4,5,6,7,9,11,13,14,15,16 — **bỏ sót đúng nhóm 2**, chính là đối thủ gây ra khoản lỗ lớn nhất. Đây là bằng chứng cho thấy tự benchmark trên tập con dễ bỏ sót matchup xấu; phải test đủ toàn bộ đối thủ mới kết luận chắc được. Chưa root-cause được chính xác vì sao minimax thua greedy ở matchup này (có thể liên quan tới cách minimax phản ứng khác greedy trước một Pacman "commit" theo path cache thay vì replan liên tục), để ngỏ nếu có thời gian điều tra thêm.
+
+**Kết luận cuối cùng cho câu hỏi "final có hơn init không, nếu giữ nguyên cách chấm":** Không đo được lợi ích nào rõ ràng — hoà Total Win, hơi kém ở tie-break. Giá trị của việc giữ bản final không nằm ở điểm số đo được, mà ở an toàn (try/except đầy đủ, không có trong `init`) và ở việc thể hiện đúng thuật toán trọng tâm của môn học (minimax + alpha-beta, nội dung duy nhất thi giữa kỳ theo `lecture-5-adversarial-search.md`).
