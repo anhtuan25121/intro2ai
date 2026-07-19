@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "INTRO2AI/Cheat Sheet - Adversarial Search.md",
-                "mode": "source",
+                "file": "INTRO2AI/Đề thi tham khảo - Adversarial Search.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Cheat Sheet - Adversarial Search"
+              "title": "Đề thi tham khảo - Adversarial Search"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 319.5
   },
   "right": {
     "id": "8c429b1793b0989d",
@@ -94,8 +94,8 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "INTRO2AI/Cheat Sheet - Adversarial Search.md",
-                "collapseAll": false,
+                "file": "INTRO2AI/Đề thi tham khảo - Adversarial Search.md",
+                "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Cheat Sheet - Adversarial Search"
+              "title": "Backlinks for Đề thi tham khảo - Adversarial Search"
             }
           },
           {
@@ -185,9 +185,12 @@
   },
   "active": "b1141adbb5943ad1",
   "lastOpenFiles": [
-    "INTRO2AI/00 - MOC.md",
-    "INTRO2AI/Cheat Sheet - Adversarial Search.md",
+    "INTRO2AI/Lộ trình học & Liên kết kiến thức.md",
     "INTRO2AI/Lecture 5 - Adversarial Search.md",
+    "INTRO2AI/Cheat Sheet - Adversarial Search.md",
+    "INTRO2AI/Đề thi tham khảo - Adversarial Search.md",
+    "INTRO2AI/Hướng dẫn làm bài & Trình bày.md",
+    "INTRO2AI/00 - MOC.md",
     "INTRO2AI/Lecture 4 - Local Search Algorithms.md",
     "INTRO2AI/Lecture 3.3 - Informed Search.md",
     "INTRO2AI/Lecture 3.2 - Uninformed Search.md",

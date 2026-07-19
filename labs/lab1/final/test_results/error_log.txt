@@ -1,0 +1,3 @@
+ERROR LOG - Self-test tournament started, 30 matches
+================================================================================
+Khong co loi/timeout nao trong lan chay nay.

@@ -1,0 +1,195 @@
+ERROR LOG - Tournament Started at 2026-07-06 19:46:10
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-07-06 19:49:34
+ERROR TYPE: AGENT_TIMEOUT
+PACMAN: 15
+GHOST: 8
+DETAILS:
+Agent timeout detected
+
+FULL OUTPUT:
+
+============================================================
+                    ARENA INITIALIZATION                    
+============================================================
+
+Loading Pacman agent from student: 15
+✓ Pacman agent loaded successfully
+
+Loading Ghost agent from student: 8
+✓ Ghost agent loaded successfully
+
+============================================================
+                         GAME START                         
+============================================================
+
+Pacman (Seeker): 15 at position (15, 10)
+Ghost (Hider): 8 at position (9, 10)
+Maximum steps: 200
+
+
+✗ Pacman agent timed out at step 6 after 1.0s
+Ghost wins by default!
+
+============================================================
+                         GAME OVER                          
+============================================================
+
+🏆 WINNER: 8 (Ghost)
+   Ghost successfully evaded Pacman!
+
+Game Statistics:
+  Total Steps: 6
+  Final Distance: 6
+
+============================================================
+
+
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-07-06 19:50:08
+ERROR TYPE: AGENT_TIMEOUT
+PACMAN: 15
+GHOST: 12
+DETAILS:
+Agent timeout detected
+
+FULL OUTPUT:
+
+============================================================
+                    ARENA INITIALIZATION                    
+============================================================
+
+Loading Pacman agent from student: 15
+✓ Pacman agent loaded successfully
+
+Loading Ghost agent from student: 12
+✓ Ghost agent loaded successfully
+
+============================================================
+                         GAME START                         
+============================================================
+
+Pacman (Seeker): 15 at position (15, 10)
+Ghost (Hider): 12 at position (9, 10)
+Maximum steps: 200
+
+
+✗ Pacman agent timed out at step 6 after 1.0s
+Ghost wins by default!
+
+============================================================
+                         GAME OVER                          
+============================================================
+
+🏆 WINNER: 12 (Ghost)
+   Ghost successfully evaded Pacman!
+
+Game Statistics:
+  Total Steps: 6
+  Final Distance: 8
+
+============================================================
+
+
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-07-06 19:51:43
+ERROR TYPE: AGENT_TIMEOUT
+PACMAN: 3
+GHOST: 13
+DETAILS:
+Agent timeout detected
+
+FULL OUTPUT:
+
+============================================================
+                    ARENA INITIALIZATION                    
+============================================================
+
+Loading Pacman agent from student: 3
+✓ Pacman agent loaded successfully
+
+Loading Ghost agent from student: 13
+✓ Ghost agent loaded successfully
+
+============================================================
+                         GAME START                         
+============================================================
+
+Pacman (Seeker): 3 at position (15, 10)
+Ghost (Hider): 13 at position (9, 10)
+Maximum steps: 200
+
+
+✗ Pacman agent timed out at step 1 after 1.0s
+Ghost wins by default!
+
+============================================================
+                         GAME OVER                          
+============================================================
+
+🏆 WINNER: 13 (Ghost)
+   Ghost successfully evaded Pacman!
+
+Game Statistics:
+  Total Steps: 1
+  Final Distance: 6
+
+============================================================
+
+
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-07-06 19:51:46
+ERROR TYPE: AGENT_TIMEOUT
+PACMAN: 3
+GHOST: 0
+DETAILS:
+Agent timeout detected
+
+FULL OUTPUT:
+
+============================================================
+                    ARENA INITIALIZATION                    
+============================================================
+
+Loading Pacman agent from student: 3
+✓ Pacman agent loaded successfully
+
+Loading Ghost agent from student: 0
+✓ Ghost agent loaded successfully
+
+============================================================
+                         GAME START                         
+============================================================
+
+Pacman (Seeker): 3 at position (15, 10)
+Ghost (Hider): 0 at position (9, 10)
+Maximum steps: 200
+
+
+✗ Pacman agent timed out at step 1 after 1.0s
+Ghost wins by default!
+
+============================================================
+                         GAME OVER                          
+============================================================
+
+🏆 WINNER: 0 (Ghost)
+   Ghost successfully evaded Pacman!
+
+Game Statistics:
+  Total Steps: 1
+  Final Distance: 6
+
+============================================================
+
+
+================================================================================
+
