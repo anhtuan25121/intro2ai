@@ -39,3 +39,12 @@ _site/
 
 # Obsidian workspace (thay doi lien tuc theo phien lam viec)
 Obsidian Vault/.obsidian/workspace.json
+
+# Ghi chu ca nhan, khong day len remote
+labs/lab2/plan.md
+
+# Claude Code — toan bo setup lien quan Claude, giu o local, khong push len GitHub
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+ruff.toml
